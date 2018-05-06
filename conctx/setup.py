@@ -9,12 +9,10 @@ from setuptools import find_packages, setup
 
 NAME = "dkamotsky.conctx"
 PACKAGES = find_packages(where="src")
-META_PATH = os.path.join("src", "__init__.py")
+META_PATH = os.path.join("src", "conctx", "__init__.py")
 CLASSIFIERS = [
-    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Natural Language :: English",
-    "License :: Proprietary",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 2",

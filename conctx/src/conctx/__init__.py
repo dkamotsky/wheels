@@ -1,4 +1,4 @@
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 __title__ = "dkamotsky.conctx"
 __description__ = "Conversational Context"
 __uri__ = "https://github.com/dkamotsky/wheels/conctx/"
