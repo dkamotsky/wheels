@@ -4,13 +4,16 @@ import logging.handlers
 import time
 from functools import wraps
 
+
+__default_logger = logging.getLogger("logr_default")
+
 __root = None
 __root_handler = None
 __root_formatter = None
 __root_listener = None
 __root_queue_handler = None
 __console_handler = None
-app_log = logging.getLogger("logr")
+app_log = __default_logger
 
 
 def elapsed_log(func):
@@ -56,7 +59,7 @@ def config():
     global __root_handler
     global __root_formatter
     global app_log
-    if app_log is None:
+    if app_log is __default_logger:
         print("Configuring logging subsystem...")
         __root_handler = logging.handlers.RotatingFileHandler(logr.config.APP_LOG_FILE, mode='a', maxBytes=logr.config.APP_LOG_SIZE,
                                                               backupCount=logr.config.APP_LOG_BACKUPS, encoding='UTF-8', delay=False)

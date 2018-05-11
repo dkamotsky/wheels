@@ -1,4 +1,4 @@
-APP_NAME='unknown'
+APP_NAME='logr'
 APP_LOG_FILE='./application.log'
 APP_LOG_LEVEL="INFO"
 APP_LOG_SIZE=5*1024*1024
