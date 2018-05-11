@@ -4,13 +4,13 @@ import logging.handlers
 import time
 from functools import wraps
 
-root = None
-root_handler = None
-root_formatter = None
-root_listener = None
-root_queue_handler = None
-console_handler = None
-app_log = None
+__root = None
+__root_handler = None
+__root_formatter = None
+__root_listener = None
+__root_queue_handler = None
+__console_handler = None
+app_log = logging.getLogger("logr")
 
 
 def elapsed_log(func):
@@ -32,13 +32,13 @@ def elapsed_log(func):
 
 
 def __setlevels(root_level):
-    global root_handler
-    global root
+    global __root_handler
+    global __root
     logging.captureWarnings(True)
-    if root_handler:
-        root_handler.setLevel(root_level)
-    if root:
-        root.setLevel(root_level)
+    if __root_handler:
+        __root_handler.setLevel(root_level)
+    if __root:
+        __root.setLevel(root_level)
     logging.getLogger("py.warnings").setLevel(logging.ERROR)
     logging.getLogger("summa.preprocessing.cleaner").setLevel(logging.WARNING)
     logging.getLogger("gensim.models.word2vec").setLevel(logging.INFO)
@@ -52,20 +52,20 @@ def __setlevels(root_level):
 
 def config():
     from logr.config import *
-    global root
-    global root_handler
-    global root_formatter
+    global __root
+    global __root_handler
+    global __root_formatter
     global app_log
     if app_log is None:
         print("Configuring logging subsystem...")
-        root_handler = logging.handlers.RotatingFileHandler(APP_LOG_FILE, mode='a', maxBytes=APP_LOG_SIZE,
+        __root_handler = logging.handlers.RotatingFileHandler(APP_LOG_FILE, mode='a', maxBytes=APP_LOG_SIZE,
                                                             backupCount=APP_LOG_BACKUPS, encoding='UTF-8', delay=False)
         if APP_LOG_FORMAT:
-            root_formatter = logging.Formatter(APP_LOG_FORMAT)
-            root_handler.setFormatter(root_formatter)
-        root = logging.getLogger()
-        root.addHandler(root_handler)
-        root.propagate = False
+            __root_formatter = logging.Formatter(APP_LOG_FORMAT)
+            __root_handler.setFormatter(__root_formatter)
+        __root = logging.getLogger()
+        __root.addHandler(__root_handler)
+        __root.propagate = False
         app_log = logging.getLogger(APP_NAME)
         __setlevels(APP_LOG_LEVEL)
     else:
@@ -73,16 +73,16 @@ def config():
 
 
 def console(root_level):
-    global root
-    global root_formatter
-    global console_handler
+    global __root
+    global __root_formatter
+    global __console_handler
     config()
-    if console_handler is None:
+    if __console_handler is None:
         app_log.info("Starting console logging...")
-        console_handler = logging.StreamHandler()
-        if root_formatter:
-            console_handler.setFormatter(root_formatter)
-        root.addHandler(console_handler)
+        __console_handler = logging.StreamHandler()
+        if __root_formatter:
+            __console_handler.setFormatter(__root_formatter)
+        __root.addHandler(__console_handler)
         __setlevels(root_level)
     else:
         app_log.info("Async logging has already been started.")
@@ -90,19 +90,19 @@ def console(root_level):
 
 
 def detach_console():
-    global root
-    global console_handler
+    global __root
+    global __console_handler
     config()
-    if console_handler is None:
+    if __console_handler is None:
         app_log.info("Console logging is not enabled.")
     else:
         app_log.info("Stopping console logging...")
         try:
-            root.removeHandler(console_handler)
+            __root.removeHandler(__console_handler)
         except:
             pass
         finally:
-            console_handler = None
+            __console_handler = None
 
 
 def start_async_logging():
@@ -110,12 +110,12 @@ def start_async_logging():
     ###
     # For Python 3 logging configuration, please refer to https://docs.python.org/3/howto/logging-cookbook.html
     ###
-    global root_handler
-    global root_listener
-    global root_queue_handler
-    global root
+    global __root_handler
+    global __root_listener
+    global __root_queue_handler
+    global __root
     config()
-    if root_queue_handler is None:
+    if __root_queue_handler is None:
         app_log.info("Starting async logging...")
         ###
         # Limit Queue size to python_asynch_logging_queue_size (100K) records.
@@ -123,35 +123,35 @@ def start_async_logging():
         # For details, please refer to https://docs.python.org/3/library/queue.html 
         ###    
         root_queue = queue.Queue(APP_LOG_QUEUE_SIZE)
-        root_queue_handler = logging.handlers.QueueHandler(root_queue)
-        root_listener = logging.handlers.QueueListener(root_queue, root_handler, respect_handler_level=True)
-        root_listener.start()
-        root.addHandler(root_queue_handler)
-        root.removeHandler(root_handler)
+        __root_queue_handler = logging.handlers.QueueHandler(root_queue)
+        __root_listener = logging.handlers.QueueListener(root_queue, __root_handler, respect_handler_level=True)
+        __root_listener.start()
+        __root.addHandler(__root_queue_handler)
+        __root.removeHandler(__root_handler)
     else:
         app_log.info("Async logging has already been started.")
 
 
 def stop_async_logging():
-    global root
-    global root_listener
-    global root_handler
-    global root_queue_handler
+    global __root
+    global __root_listener
+    global __root_handler
+    global __root_queue_handler
     config()
-    if root_queue_handler is None:
+    if __root_queue_handler is None:
         app_log.info("Async logging is not running.")
     else:
         app_log.info("Stopping async logging...")
         try:
-            root.addHandler(root_handler)
-            if root_queue_handler:
-                root.removeHandler(root_queue_handler)
-            if root_listener:
-                root_listener.stop()
+            __root.addHandler(__root_handler)
+            if __root_queue_handler:
+                __root.removeHandler(__root_queue_handler)
+            if __root_listener:
+                __root_listener.stop()
         except:
             pass
         finally:
-            root_queue_handler = None
+            __root_queue_handler = None
 
 
 config()
