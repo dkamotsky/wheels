@@ -51,23 +51,23 @@ def __setlevels(root_level):
 
 
 def config():
-    from logr.config import *
+    import logr.config
     global __root
     global __root_handler
     global __root_formatter
     global app_log
     if app_log is None:
         print("Configuring logging subsystem...")
-        __root_handler = logging.handlers.RotatingFileHandler(APP_LOG_FILE, mode='a', maxBytes=APP_LOG_SIZE,
-                                                            backupCount=APP_LOG_BACKUPS, encoding='UTF-8', delay=False)
-        if APP_LOG_FORMAT:
-            __root_formatter = logging.Formatter(APP_LOG_FORMAT)
+        __root_handler = logging.handlers.RotatingFileHandler(logr.config.APP_LOG_FILE, mode='a', maxBytes=logr.config.APP_LOG_SIZE,
+                                                              backupCount=logr.config.APP_LOG_BACKUPS, encoding='UTF-8', delay=False)
+        if logr.config.APP_LOG_FORMAT:
+            __root_formatter = logging.Formatter(logr.config.APP_LOG_FORMAT)
             __root_handler.setFormatter(__root_formatter)
         __root = logging.getLogger()
         __root.addHandler(__root_handler)
         __root.propagate = False
-        app_log = logging.getLogger(APP_NAME)
-        __setlevels(APP_LOG_LEVEL)
+        app_log = logging.getLogger(logr.config.APP_NAME)
+        __setlevels(logr.config.APP_LOG_LEVEL)
     else:
         app_log.debug("Logging subsystem already configured.")
 
@@ -106,7 +106,7 @@ def detach_console():
 
 
 def start_async_logging():
-    from logr.config import *
+    import logr.config
     ###
     # For Python 3 logging configuration, please refer to https://docs.python.org/3/howto/logging-cookbook.html
     ###
@@ -122,7 +122,7 @@ def start_async_logging():
         # When Queue reaches this size, insertions will block until records are consumed.
         # For details, please refer to https://docs.python.org/3/library/queue.html 
         ###    
-        root_queue = queue.Queue(APP_LOG_QUEUE_SIZE)
+        root_queue = queue.Queue(logr.config.APP_LOG_QUEUE_SIZE)
         __root_queue_handler = logging.handlers.QueueHandler(root_queue)
         __root_listener = logging.handlers.QueueListener(root_queue, __root_handler, respect_handler_level=True)
         __root_listener.start()
