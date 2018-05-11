@@ -4,5 +4,5 @@
 # vi ~/.pypirc
 
 rm -rf build dists
-python3 setup.py dists
-twine upload -r pypi dist/dkamotsky.conctx-*
+python setup.py dists
+twine upload -r pypi dist/dkamotsky.logr-*
