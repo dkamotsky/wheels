@@ -88,7 +88,7 @@ def console(root_level):
         __root.addHandler(__console_handler)
         __setlevels(root_level)
     else:
-        app_log.info("Async logging has already been started.")
+        app_log.info("Console logging has already been started.")
     return app_log
 
 
