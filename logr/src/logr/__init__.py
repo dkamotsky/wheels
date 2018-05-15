@@ -1,4 +1,4 @@
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 __title__ = "dkamotsky.logr"
 __description__ = "Logging Utility"
 __uri__ = "https://github.com/dkamotsky/wheels/logr/"
