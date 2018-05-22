@@ -1,4 +1,4 @@
-include LICENSE *.md
+include LICENSE unescape.sh *.md
 
 # Tests
 recursive-include tests *.py
