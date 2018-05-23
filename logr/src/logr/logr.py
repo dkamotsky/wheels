@@ -75,7 +75,7 @@ def config():
         app_log.debug("Logging subsystem already configured.")
 
 
-def console(root_level):
+def console(root_level = logging.INFO):
     global __root
     global __root_formatter
     global __console_handler
