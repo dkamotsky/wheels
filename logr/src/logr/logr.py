@@ -53,7 +53,7 @@ def __setlevels(root_level):
 """
 
 
-def __config():
+def config():
     import logr.config
     global __root
     global __root_handler
@@ -79,7 +79,7 @@ def console(root_level):
     global __root
     global __root_formatter
     global __console_handler
-    __config()
+    config()
     if __console_handler is None:
         app_log.info("Starting console logging...")
         __console_handler = logging.StreamHandler()
@@ -95,7 +95,7 @@ def console(root_level):
 def detach_console():
     global __root
     global __console_handler
-    __config()
+    config()
     if __console_handler is None:
         app_log.info("Console logging is not enabled.")
     else:
@@ -117,7 +117,7 @@ def start_async_logging():
     global __root_listener
     global __root_queue_handler
     global __root
-    __config()
+    config()
     if __root_queue_handler is None:
         app_log.info("Starting async logging...")
         ###
@@ -140,7 +140,7 @@ def stop_async_logging():
     global __root_listener
     global __root_handler
     global __root_queue_handler
-    __config()
+    config()
     if __root_queue_handler is None:
         app_log.info("Async logging is not running.")
     else:
