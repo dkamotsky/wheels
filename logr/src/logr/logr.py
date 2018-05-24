@@ -47,10 +47,8 @@ def __setlevels(root_level):
     logging.getLogger("gensim.models.word2vec").setLevel(logging.INFO)
 
 
-"""
-    Look at the bottom of this file:
-    this function runs on this module's import.
-"""
+def is_configured():
+    return not (app_log is __default_logger)
 
 
 def config():
@@ -59,7 +57,9 @@ def config():
     global __root_handler
     global __root_formatter
     global app_log
-    if app_log is __default_logger:
+    if is_configured():
+        app_log.debug("Logging subsystem already configured.")
+    else:
         app_log.info("Configuring logging subsystem...")
         __root_handler = logging.handlers.RotatingFileHandler(logr.config.APP_LOG_FILE, mode='a', maxBytes=logr.config.APP_LOG_SIZE,
                                                               backupCount=logr.config.APP_LOG_BACKUPS, encoding='UTF-8', delay=False)
@@ -71,8 +71,6 @@ def config():
         __root.propagate = False
         app_log = logging.getLogger(logr.config.APP_NAME)
         __setlevels(logr.config.APP_LOG_LEVEL)
-    else:
-        app_log.debug("Logging subsystem already configured.")
 
 
 def console(root_level = logging.INFO):
